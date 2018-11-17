@@ -57,24 +57,67 @@ public class UserController {
 
     /**
      * 注册
+     *
      * @param user user
      * @return res
      */
     @RequestMapping(value = "register.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> register(User user){
+    public ServerResponse<String> register(User user) {
         return iUserService.register(user);
     }
 
     /**
      * 校验
-     * @param str 值
+     *
+     * @param str  值
      * @param type 类型
      * @return res
      */
     @RequestMapping(value = "check_valid.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> checkValid(String str, String type){
+    public ServerResponse<String> checkValid(String str, String type) {
         return iUserService.checkValid(str, type);
+    }
+
+    /**
+     * 忘记密码，通过问题找回
+     *
+     * @param username u
+     * @return 问题
+     */
+    @RequestMapping(value = "forget_get_question.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetGetQuestion(String username) {
+        return iUserService.selectQuestion(username);
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @param session session
+     * @return user_info
+     */
+    @RequestMapping(value = "get_user_info.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> getUserInfo(HttpSession session) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user != null) {
+            return ServerResponse.createBySuccess(user);
+        }
+        return ServerResponse.createByErrorMsg("用户未登录，无法获取信息");
+    }
+
+    /**
+     * 使用本地缓存检查问题答案
+     * @param username u
+     * @param question q
+     * @param answer a
+     * @return 答案是否正确
+     */
+    @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer){
+        return iUserService.forgetCheckAnswer(username, question, answer);
     }
 }
