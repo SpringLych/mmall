@@ -26,4 +26,24 @@ public interface IUserService {
      * @return 问题答案是否正确
      */
     ServerResponse<String> forgetCheckAnswer(String username, String question, String answer);
+
+    /**
+     * 根据用户名更新密码
+     *
+     * @param username    u
+     * @param passwordNew p
+     * @param forgetToken f
+     * @return 重置是否成功
+     */
+    ServerResponse<String> forgetRestPassword(String username, String passwordNew, String forgetToken);
+
+    /**
+     * 登录状态修改密码
+     *
+     * @param passwordOld p
+     * @param passwordNew p
+     * @param user        user
+     * @return 修改密码是否成功的提示信息
+     */
+    ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
 }

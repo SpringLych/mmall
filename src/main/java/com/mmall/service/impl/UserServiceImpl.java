@@ -29,7 +29,6 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createByErrorMsg("用户名不存在");
         }
 
-        //todo 密码登录MD5
         String Md5Password = MD5Util.MD5EncodeUtf8(password);
         User user = userMapper.selectLogin(username, Md5Password);
         if (user == null) {
@@ -134,4 +133,61 @@ public class UserServiceImpl implements IUserService {
         return ServerResponse.createByErrorMsg("问题答案错误");
     }
 
+    /**
+     * 根据用户名更新密码
+     *
+     * @param username    u
+     * @param passwordNew p
+     * @param forgetToken f
+     * @return 重置是否成功
+     */
+    @Override
+    public ServerResponse<String> forgetRestPassword(String username, String passwordNew, String forgetToken) {
+        if (StringUtils.isNotBlank(forgetToken)) {
+            return ServerResponse.createByErrorMsg("参数错误，token需要传递");
+        }
+        ServerResponse validResponse = this.checkValid(username, Const.USERNAME);
+        if (validResponse.isSuccess()) {
+            // 用户名不存在
+            return ServerResponse.createByErrorMsg("用户名不存在");
+        }
+        String token = TokenCache.getKey(TokenCache.TOKEN_PREFIX + username);
+        if (StringUtils.isNotBlank(token)) {
+            return ServerResponse.createByErrorMsg("token无效");
+        }
+        // 所有校检都通过
+        if (StringUtils.equals(forgetToken, token)) {
+            String md5Password = MD5Util.MD5EncodeUtf8(passwordNew);
+            int rowCount = userMapper.updatePasswordByUsername(username, md5Password);
+
+            if (rowCount > 0) {
+                ServerResponse.createBySuccess("修改密码成功");
+            }
+        } else {
+            return ServerResponse.createByErrorMsg("token错误");
+        }
+        return ServerResponse.createBySuccess("修改密码失败");
+    }
+
+    /**
+     * 登录状态修改密码
+     *
+     * @param passwordOld p
+     * @param passwordNew p
+     * @param user        user
+     * @return 修改密码是否成功的提示信息
+     */
+    @Override
+    public ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user) {
+        int resultCount = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(passwordOld), user.getId());
+        if (resultCount == 0) {
+            return ServerResponse.createByErrorMsg("旧密码错误");
+        }
+        user.setPassword(MD5Util.MD5EncodeUtf8(passwordNew));
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("密码更新成功");
+        }
+        return ServerResponse.createByErrorMsg("密码更新失败");
+    }
 }

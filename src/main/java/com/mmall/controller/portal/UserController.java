@@ -110,14 +110,46 @@ public class UserController {
 
     /**
      * 使用本地缓存检查问题答案
+     *
      * @param username u
      * @param question q
-     * @param answer a
+     * @param answer   a
      * @return 答案是否正确
      */
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.GET)
     @ResponseBody
-    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer){
+    public ServerResponse<String> forgetCheckAnswer(String username, String question, String answer) {
         return iUserService.forgetCheckAnswer(username, question, answer);
+    }
+
+    /**
+     * 根据用户名重置密码
+     *
+     * @param username    u
+     * @param passwordNew p
+     * @param forgetToken f
+     * @return 重置密码的提示信息
+     */
+    @RequestMapping(value = "forget_rest_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> forgetRestPassword(String username, String passwordNew, String forgetToken) {
+        return iUserService.forgetRestPassword(username, passwordNew, forgetToken);
+    }
+
+    /**
+     * 登录状态下的重置密码
+     *
+     * @param session s
+     * @return 修改密码是否成功的提示信息
+     */
+    @RequestMapping(value = "reset_password.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew) {
+        // 根据session检验用户是否登录
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null){
+            return ServerResponse.createByErrorMsg("用户未登录");
+        }
+        return iUserService.resetPassword(passwordOld, passwordNew, user);
     }
 }
