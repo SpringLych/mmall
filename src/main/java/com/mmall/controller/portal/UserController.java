@@ -160,7 +160,7 @@ public class UserController {
      * @param user    u
      * @return User
      */
-    @RequestMapping(value = "update_infomation.do", method = RequestMethod.GET)
+    @RequestMapping(value = "update_infromation.do", method = RequestMethod.GET)
     @ResponseBody
     public ServerResponse<User> updateInformation(HttpSession session, User user) {
         // 根据session检验用户是否登录
