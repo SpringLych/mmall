@@ -49,4 +49,6 @@ public interface UserMapper {
      * @return 匹配数量
      */
     int checkPassword(@Param("password") String password, @Param("userId") Integer userId);
+
+    int checkEmailByUserId(@Param("email") String email, @Param("id") Integer id);
 }

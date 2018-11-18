@@ -147,9 +147,35 @@ public class UserController {
     public ServerResponse<String> resetPassword(HttpSession session, String passwordOld, String passwordNew) {
         // 根据session检验用户是否登录
         User user = (User) session.getAttribute(Const.CURRENT_USER);
-        if (user == null){
+        if (user == null) {
             return ServerResponse.createByErrorMsg("用户未登录");
         }
         return iUserService.resetPassword(passwordOld, passwordNew, user);
+    }
+
+    /**
+     * 更新用户信息，更新完成后把新的用户信息保存到session中，同时穿给前端
+     *
+     * @param session s
+     * @param user    u
+     * @return User
+     */
+    @RequestMapping(value = "update_infomation.do", method = RequestMethod.GET)
+    @ResponseBody
+    public ServerResponse<User> updateInformation(HttpSession session, User user) {
+        // 根据session检验用户是否登录
+        User currentUser = (User) session.getAttribute(Const.CURRENT_USER);
+        if (currentUser == null) {
+            return ServerResponse.createByErrorMsg("用户未登录");
+        }
+        // 传入的user不含有id信息
+        // 防止越权，将id设置为从session获取的id，防止id 被变换
+        user.setId(currentUser.getId());
+        user.setUsername(currentUser.getUsername());
+        ServerResponse<User> response = iUserService.updateInformation(user);
+        if (response.isSuccess()) {
+            session.setAttribute(Const.CURRENT_USER, response.getData());
+        }
+        return response;
     }
 }

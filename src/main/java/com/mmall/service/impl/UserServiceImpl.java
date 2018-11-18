@@ -190,4 +190,33 @@ public class UserServiceImpl implements IUserService {
         }
         return ServerResponse.createByErrorMsg("密码更新失败");
     }
+
+    /**
+     * 更新个人信息
+     *
+     * @param user user
+     * @return User 更新是否成功的提示信息
+     */
+    @Override
+    public ServerResponse<User> updateInformation(User user) {
+        // username不能被更新
+        // email进行校验，新的email不能存在，如果email相同，不能是当前用户的
+        int resCount = userMapper.checkEmailByUserId(user.getEmail(), user.getId());
+        if (resCount > 0) {
+            return ServerResponse.createByErrorMsg("email已存在，请更换");
+        }
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setAnswer(user.getAnswer());
+
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if (updateCount > 0) {
+            return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
+        }
+        return ServerResponse.createByErrorMsg("更新个人信息失败");
+    }
+
 }

@@ -46,4 +46,11 @@ public interface IUserService {
      * @return 修改密码是否成功的提示信息
      */
     ServerResponse<String> resetPassword(String passwordOld, String passwordNew, User user);
+
+    /**
+     * 更新个人信息
+     * @param user user
+     * @return User 更新是否成功的提示信息
+     */
+    ServerResponse<User> updateInformation(User user);
 }
