@@ -73,11 +73,11 @@ public class UserController {
     }
 
     /**
-     * 校验
+     * 检验用户名的有效性
      *
-     * @param str  值
-     * @param type 类型
-     * @return res
+     * @param str  可以是用户名，email
+     * @param type 为username，email
+     * @return success：”校验成功“;fail:"已存在"
      */
     @RequestMapping(value = "check_valid.do", method = RequestMethod.POST)
     @ResponseBody
@@ -86,7 +86,7 @@ public class UserController {
     }
 
     /**
-     * 忘记密码，通过问题找回
+     * 忘记密码，获取问题
      *
      * @param username u
      * @return 问题
@@ -114,12 +114,12 @@ public class UserController {
     }
 
     /**
-     * 使用本地缓存检查问题答案
+     * 提交问题答案
      *
      * @param username u
      * @param question q
      * @param answer   a
-     * @return 答案是否正确
+     * @return 答案正确:token;错误：错误
      */
     @RequestMapping(value = "forget_check_answer.do", method = RequestMethod.POST)
     @ResponseBody
@@ -128,7 +128,7 @@ public class UserController {
     }
 
     /**
-     * 根据用户名重置密码
+     * 忘记密码重设密码
      *
      * @param username    u
      * @param passwordNew p
@@ -159,7 +159,7 @@ public class UserController {
     }
 
     /**
-     * 更新用户信息，更新完成后把新的用户信息保存到session中，同时穿给前端
+     * 登录状态更新个人信息
      *
      * @param session s
      * @param user    u

@@ -13,6 +13,13 @@ public interface IUserService {
 
     ServerResponse<String> register(User user);
 
+    /**
+     * 检验用户名的有效性
+     *
+     * @param str  可以是用户名，email
+     * @param type 为username，email
+     * @return success：”校验成功“;fail:"已存在"
+     */
     ServerResponse<String> checkValid(String str, String type);
 
     ServerResponse<String> selectQuestion(String username);

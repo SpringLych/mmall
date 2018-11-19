@@ -66,11 +66,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     /**
-     * 校检
+     * 检验用户名的有效性
      *
-     * @param str  值
-     * @param type 类型
-     * @return 成功，str不存在；失败str已存在
+     * @param str  可以是用户名，email
+     * @param type 为username，email
+     * @return success：”校验成功“;fail:"已存在"
      */
     @Override
     public ServerResponse<String> checkValid(String str, String type) {
@@ -232,7 +232,7 @@ public class UserServiceImpl implements IUserService {
     @Override
     public ServerResponse<User> getInformation(Integer userId) {
         User user = userMapper.selectByPrimaryKey(userId);
-        if (user == null){
+        if (user == null) {
             return ServerResponse.createByErrorMsg("找不到用户");
         }
         user.setPassword(StringUtils.EMPTY);
