@@ -69,4 +69,12 @@ public interface IUserService {
      * @return User
      */
     ServerResponse<User> getInformation(Integer userId);
+
+    /**
+     * 检查是否为管理员
+     *
+     * @param user user
+     * @return return
+     */
+    ServerResponse checkAdminRole(User user);
 }

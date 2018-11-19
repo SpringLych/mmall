@@ -45,7 +45,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public ServerResponse<String> register(User user) {
-        ServerResponse validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
+        ServerResponse<String> validResponse = this.checkValid(user.getUsername(), Const.USERNAME);
         if (!validResponse.isSuccess()) {
             return validResponse;
         }
@@ -237,6 +237,19 @@ public class UserServiceImpl implements IUserService {
         }
         user.setPassword(StringUtils.EMPTY);
         return ServerResponse.createBySuccess(user);
+    }
+
+    /**
+     * 检查是否为管理员
+     *
+     * @param user user
+     * @return return
+     */
+    public ServerResponse checkAdminRole(User user) {
+        if (user != null && user.getRole() == Const.Role.ROLE_ADMIN) {
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
 
 }
