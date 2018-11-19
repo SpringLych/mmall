@@ -19,8 +19,12 @@ import java.util.UUID;
  */
 @Service("iUserService")
 public class UserServiceImpl implements IUserService {
+    private final UserMapper userMapper;
+
     @Autowired
-    private UserMapper userMapper;
+    public UserServiceImpl(UserMapper userMapper) {
+        this.userMapper = userMapper;
+    }
 
     @Override
     public ServerResponse<User> login(String username, String password) {
@@ -217,6 +221,22 @@ public class UserServiceImpl implements IUserService {
             return ServerResponse.createBySuccess("更新个人信息成功", updateUser);
         }
         return ServerResponse.createByErrorMsg("更新个人信息失败");
+    }
+
+    /**
+     * 获取个人详细信息
+     *
+     * @param userId id
+     * @return User
+     */
+    @Override
+    public ServerResponse<User> getInformation(Integer userId) {
+        User user = userMapper.selectByPrimaryKey(userId);
+        if (user == null){
+            return ServerResponse.createByErrorMsg("找不到用户");
+        }
+        user.setPassword(StringUtils.EMPTY);
+        return ServerResponse.createBySuccess(user);
     }
 
 }

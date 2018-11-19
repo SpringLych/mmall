@@ -49,8 +49,17 @@ public interface IUserService {
 
     /**
      * 更新个人信息
+     *
      * @param user user
      * @return User 更新是否成功的提示信息
      */
     ServerResponse<User> updateInformation(User user);
+
+    /**
+     * 获取个人详细信息
+     *
+     * @param userId id
+     * @return User
+     */
+    ServerResponse<User> getInformation(Integer userId);
 }
