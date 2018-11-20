@@ -245,6 +245,7 @@ public class UserServiceImpl implements IUserService {
      * @param user user
      * @return return
      */
+    @Override
     public ServerResponse checkAdminRole(User user) {
         if (user != null && user.getRole() == Const.Role.ROLE_ADMIN) {
             return ServerResponse.createBySuccess();
