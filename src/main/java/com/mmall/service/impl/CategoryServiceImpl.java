@@ -1,5 +1,7 @@
 package com.mmall.service.impl;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import com.mmall.common.ServerResponse;
 import com.mmall.dao.CategoryMapper;
 import com.mmall.pojo.Category;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author LiYingChun
@@ -82,6 +85,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @param categoryId id
      * @return List形式的category信息
      */
+    @Override
     public ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId) {
         List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
         if (CollectionUtils.isEmpty(categoryList)) {
@@ -91,4 +95,42 @@ public class CategoryServiceImpl implements ICategoryService {
         return ServerResponse.createBySuccess(categoryList);
     }
 
+    /**
+     * 获取category id 及其子节点 category id
+     *
+     * @param categoryId id
+     * @return category 信息
+     */
+    @Override
+    public ServerResponse selectCategoryAndChildrenById(Integer categoryId) {
+        Set<Category> categorySet = Sets.newHashSet();
+        findChidlCategory(categorySet, categoryId);
+
+        List<Integer> categoryIdList = Lists.newArrayList();
+        if (categoryId != null) {
+            for (Category categoryItem : categorySet) {
+                categoryIdList.add(categoryItem.getId());
+            }
+        }
+        return ServerResponse.createBySuccess(categoryIdList);
+    }
+
+    /**
+     * 递归查询子节点
+     *
+     * @param categoryId id
+     * @return r
+     */
+    private Set<Category> findChidlCategory(Set<Category> categorySet, Integer categoryId) {
+        Category category = categoryMapper.selectByPrimaryKey(categoryId);
+        if (category != null) {
+            categorySet.add(category);
+        }
+        // 退出条件
+        List<Category> categoryList = categoryMapper.selectCategoryChildrenByParentId(categoryId);
+        for (Category category1 : categoryList) {
+            findChidlCategory(categorySet, category1.getId());
+        }
+        return categorySet;
+    }
 }
