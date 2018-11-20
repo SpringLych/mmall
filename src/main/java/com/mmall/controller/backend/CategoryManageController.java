@@ -104,7 +104,7 @@ public class CategoryManageController {
     }
 
     /**
-     * 获取当前category id 并且递归查询它的子节点category id
+     * 获取当前 category id 并且递归查询它的子节点category id
      *
      * @param session    session
      * @param categoryId id
