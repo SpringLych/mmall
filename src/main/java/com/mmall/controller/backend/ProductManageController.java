@@ -10,6 +10,7 @@ import com.mmall.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpSession;
@@ -62,6 +63,47 @@ public class ProductManageController {
         if (iUserService.checkAdminRole(user).isSuccess()) {
             // 保存商品
             return iProductService.setSaleStatus(productId, status);
+        } else {
+            return ServerResponse.createByErrorMsg("无操作权限");
+        }
+    }
+
+    /**
+     * 获取商品详情
+     */
+    @RequestMapping("detail.do")
+    @ResponseBody
+    public ServerResponse getDetail(HttpSession session, Integer productId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要登录");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            // 获取详情
+            return iProductService.manageProductDetail(productId);
+        } else {
+            return ServerResponse.createByErrorMsg("无操作权限");
+        }
+    }
+
+    /**
+     * 获取列表
+     *
+     * @param pageNum  第几页
+     * @param pageSize 页面容量
+     */
+    @RequestMapping("list.do")
+    @ResponseBody
+    public ServerResponse getList(HttpSession session,
+                                  @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                  @RequestParam(value = "pageSize", defaultValue = "1") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要登录");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            // 获取详情
+            return iProductService.getProductList(pageNum, pageSize);
         } else {
             return ServerResponse.createByErrorMsg("无操作权限");
         }

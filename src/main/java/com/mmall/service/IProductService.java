@@ -1,7 +1,9 @@
 package com.mmall.service;
 
+import com.github.pagehelper.PageInfo;
 import com.mmall.common.ServerResponse;
 import com.mmall.pojo.Product;
+import com.mmall.vo.ProductDetailVo;
 
 /**
  * @author LiYingChun
@@ -25,4 +27,8 @@ public interface IProductService {
      * @return 提示信息
      */
     ServerResponse<String> setSaleStatus(Integer productId, Integer status);
+
+    ServerResponse<ProductDetailVo> manageProductDetail(Integer productId);
+
+    ServerResponse<PageInfo> getProductList(int pageNum, int pageSize);
 }
