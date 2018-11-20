@@ -108,4 +108,27 @@ public class ProductManageController {
             return ServerResponse.createByErrorMsg("无操作权限");
         }
     }
+
+    /**
+     * 可根据商品名称和商品id搜索
+     */
+    @RequestMapping("search.do")
+    @ResponseBody
+    public ServerResponse productSearch(HttpSession session,
+                                        String productName, Integer productId,
+                                        @RequestParam(value = "pageNum", defaultValue = "1") int pageNum,
+                                        @RequestParam(value = "pageSize", defaultValue = "1") int pageSize) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要登录");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            // 搜索
+            return iProductService.searchProduct(productName, productId, pageNum, pageSize);
+        } else {
+            return ServerResponse.createByErrorMsg("无操作权限");
+        }
+    }
+
+
 }

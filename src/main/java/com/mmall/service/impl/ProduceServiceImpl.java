@@ -148,7 +148,7 @@ public class ProduceServiceImpl implements IProductService {
         List<Product> productList = productMapper.selectList();
         List<ProductListVo> productListVoList = Lists.newArrayList();
         for (Product productItem : productList) {
-            ProductListVo productListVo = assembleProductListlVo(productItem);
+            ProductListVo productListVo = assembleProductListVo(productItem);
             productListVoList.add(productListVo);
         }
 
@@ -160,7 +160,7 @@ public class ProduceServiceImpl implements IProductService {
     /**
      * ProductListVo组装方法
      */
-    private ProductListVo assembleProductListlVo(Product product) {
+    private ProductListVo assembleProductListVo(Product product) {
         ProductListVo productListVo = new ProductListVo();
         productListVo.setId(product.getId());
         productListVo.setCategoryId(product.getCategoryId());
@@ -172,6 +172,24 @@ public class ProduceServiceImpl implements IProductService {
         productListVo.setImageHost(PropertiesUtil.getProperty(
                 "ftp.server.http.prefix", "http://img.happymmall.com/"));
         return productListVo;
+    }
+
+    @Override
+    public ServerResponse<PageInfo> searchProduct(String productName, Integer productId,
+                                                  int pageNum, int pageSize){
+        PageHelper.startPage(pageNum, pageSize);
+        if (StringUtils.isNotBlank(productName)){
+            productName = "%" + productName + "%";
+        }
+        List<Product> productList = productMapper.selectByNameAndProduct(productName, productId);
+        List<ProductListVo> productListVoList = Lists.newArrayList();
+        for (Product product : productList) {
+            ProductListVo productListVo = assembleProductListVo(product);
+            productListVoList.add(productListVo);
+        }
+        PageInfo pageResult = new PageInfo(productList);
+        pageResult.setList(productListVoList);
+        return ServerResponse.createBySuccess(pageResult);
     }
 
 }
