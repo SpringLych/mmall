@@ -6,6 +6,7 @@ import com.mmall.common.ServerResponse;
 import com.mmall.pojo.User;
 import com.mmall.service.ICategoryService;
 import com.mmall.service.IUserService;
+import net.sf.jsqlparser.schema.Server;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -56,4 +57,51 @@ public class CategoryManageController {
             return ServerResponse.createByErrorMsg("不是管理员，无操作权限");
         }
     }
+
+    /**
+     * 更新category name
+     *
+     * @param session      s
+     * @param categoryId   id
+     * @param categoryName name
+     * @return return
+     */
+    @RequestMapping(value = "set_category_name.do")
+    @ResponseBody
+    public ServerResponse setCategoryName(HttpSession session, Integer categoryId, String categoryName) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要登录");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            // 更新name
+            return iCategoryService.updateCategoryName(categoryId, categoryName);
+        } else {
+            return ServerResponse.createByErrorMsg("不是管理员，无操作权限");
+        }
+    }
+
+    /**
+     * 根据categoryId 获取当前id下子节点的category信息，平级，不递归
+     *
+     * @param session    session
+     * @param categoryId id
+     * @return return
+     */
+    @RequestMapping(value = "get_category.do")
+    @ResponseBody
+    public ServerResponse getChildrenParallelCategory(HttpSession session,
+                                                      @RequestParam(value = "categoryId", defaultValue = "0") Integer categoryId) {
+        User user = (User) session.getAttribute(Const.CURRENT_USER);
+        if (user == null) {
+            return ServerResponse.createByErrorCodeMsg(ResponseCode.NEED_LOGIN.getCode(), "未登录，需要登录");
+        }
+        if (iUserService.checkAdminRole(user).isSuccess()) {
+            // 查询子节点信息，不递归
+            return iCategoryService.getChildrenParallelCategory(categoryId);
+        } else {
+            return ServerResponse.createByErrorMsg("不是管理员，无操作权限");
+        }
+    }
+
 }

@@ -1,9 +1,7 @@
 package com.mmall.common;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-//import org.codehaus.jackson.annotate.JsonIgnore;
-//import org.codehaus.jackson.map.annotate.JsonSerialize;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.io.Serializable;
 
@@ -13,7 +11,7 @@ import java.io.Serializable;
  * 通用的数据段响应对象
  * JsonSerialize：序列化Json时，如果是null的对象，key也消失
  */
-@JsonSerialize(include = JsonSerialize.Inclusion.NON_NULL)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServerResponse<T> implements Serializable {
     private int status;
     private String msg;
