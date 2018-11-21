@@ -43,5 +43,5 @@ public interface ICategoryService {
      * @param categoryId id
      * @return category 信息
      */
-    ServerResponse selectCategoryAndChildrenById(Integer categoryId);
+    ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId);
 }

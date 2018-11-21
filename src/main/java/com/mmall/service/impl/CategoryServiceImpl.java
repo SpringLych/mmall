@@ -102,7 +102,7 @@ public class CategoryServiceImpl implements ICategoryService {
      * @return category 信息
      */
     @Override
-    public ServerResponse selectCategoryAndChildrenById(Integer categoryId) {
+    public ServerResponse<List<Integer>> selectCategoryAndChildrenById(Integer categoryId) {
         Set<Category> categorySet = Sets.newHashSet();
         findChidlCategory(categorySet, categoryId);
 
