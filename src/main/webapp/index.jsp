@@ -1,4 +1,5 @@
 <html>
+<%@page language="java" contentType="text/html;charset=utf-8"  pageEncoding="UTF-8"%>
 <body>
 <h2 style="text-align: center;color: red">SpringMVC上传文件</h2>
 
